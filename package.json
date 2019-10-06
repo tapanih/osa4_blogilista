@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/tapanih/osa4_blogilista#readme",
   "devDependencies": {
+    "eslint": "^6.5.1",
     "jest": "^24.9.0",
     "nodemon": "^1.19.3"
   },
