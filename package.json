@@ -4,9 +4,9 @@
   "description": "Blogilista",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "watch": "nodemon index.js",
-    "test": "jest --verbose",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "lint": "eslint ."
   },
   "repository": {
@@ -20,9 +20,11 @@
   },
   "homepage": "https://github.com/tapanih/osa4_blogilista#readme",
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "eslint": "^6.5.1",
     "jest": "^24.9.0",
-    "nodemon": "^1.19.3"
+    "nodemon": "^1.19.3",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "cors": "^2.8.5",
