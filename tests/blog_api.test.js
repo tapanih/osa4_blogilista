@@ -79,6 +79,38 @@ test('likes are defaulted to 0 if not provided', async() => {
   expect(addedBlog.likes).toBe(0)
 })
 
+test('a blog without a title can not be added', async () => {
+  const newBlogWithoutTitle = {
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+    likes: 2,
+  }
+
+  await api
+    .post('/api/blogs/')
+    .send(newBlogWithoutTitle)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+})
+
+test('a blog without an url can not be added', async () => {
+  const newBlogWithoutUrl = {
+    title: 'Type wars',
+    author: 'Robert C. Martin',
+    likes: 2,
+  }
+
+  await api
+    .post('/api/blogs/')
+    .send(newBlogWithoutUrl)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
