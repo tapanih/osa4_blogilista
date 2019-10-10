@@ -21,6 +21,22 @@ blogsRouter.post('/', async (req, res, next) => {
   }
 })
 
+blogsRouter.put('/:id', async (req, res, next) => {
+  try {
+    const blog = await Blog.findOne({ _id: req.params.id })
+    const updatedBlog = {
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: req.body.likes,
+    }
+    const savedBlog = await Blog.findByIdAndUpdate(req.params.id, updatedBlog)
+    res.json(savedBlog.toJSON())
+  } catch (exception) {
+    next(exception)
+  }
+})
+
 blogsRouter.delete('/:id', async (req, res, next) => {
   try {
     await Blog.findByIdAndRemove(req.params.id)
