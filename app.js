@@ -9,7 +9,8 @@ const mongoose = require('mongoose')
 
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true })
+  useUnifiedTopology: true,
+  useFindAndModify: false })
 
 app.use(cors())
 app.use(bodyParser.json())

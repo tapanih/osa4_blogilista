@@ -111,6 +111,21 @@ test('a blog without an url can not be added', async () => {
   expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
 })
 
+test('a blog can be deleted', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd.length).toBe(blogsAtStart.length - 1)
+
+  const titles = blogsAtEnd.map(blog => blog.title)
+  expect(titles).not.toContain('React patterns')
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

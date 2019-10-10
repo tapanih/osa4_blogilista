@@ -16,8 +16,17 @@ blogsRouter.post('/', async (req, res, next) => {
   try {
     const savedBlog = await blog.save()
     res.status(201).json(savedBlog.toJSON())
-  } catch(exception) {
+  } catch (exception) {
     next(exception)
+  }
+})
+
+blogsRouter.delete('/:id', async (req, res, next) => {
+  try {
+    await Blog.findByIdAndRemove(req.params.id)
+    res.status(204).end()
+  } catch (expection) {
+    next(expection)
   }
 })
 
