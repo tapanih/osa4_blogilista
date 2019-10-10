@@ -118,7 +118,7 @@ test('a blog can be deleted', async () => {
   expect(blogsAtEnd.length).toBe(blogsAtStart.length - 1)
 
   const titles = blogsAtEnd.map(blog => blog.title)
-  expect(titles).not.toContain('React patterns')
+  expect(titles).not.toContain(blogToDelete.title)
 })
 
 afterAll(() => {
