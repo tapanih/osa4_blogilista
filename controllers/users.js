@@ -2,6 +2,12 @@ const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/user')
 
+// eslint-disable-next-line no-unused-vars
+usersRouter.get('/', async (req, res) => {
+  const users = await User.find({})
+  return users.map(user => user.toJSON())
+})
+
 usersRouter.post('/', async (req, res, next) => {
   try {
     const saltRounds = 10
