@@ -8,6 +8,7 @@ const helper = require('./test_helper')
 
 describe('when there is initially 3 blogs in the db', () => {
   let token = null
+  let userid = null
 
   beforeAll(async () => {
     await User.deleteMany({})
@@ -16,21 +17,22 @@ describe('when there is initially 3 blogs in the db', () => {
       password: 'secret'
     }
 
-    await api
+    const res1 = await api
       .post('/api/users/')
       .send(user)
 
-    const res = await api
+    userid = res1.body.id
+
+    const res2 = await api
       .post('/api/login/')
       .send(user)
 
-    token = res.body.token
+    token = res2.body.token
   })
 
   beforeEach(async () => {
     await Blog.deleteMany({})
-
-    const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
+    const blogObjects = helper.initialBlogs.map(blog => new Blog({ ...blog, user: userid }))
     const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
   })
@@ -51,6 +53,12 @@ describe('when there is initially 3 blogs in the db', () => {
     const blogs = await helper.blogsInDb()
     expect(blogs[0].id).toBeDefined()
     expect(blogs[2].id).toBeDefined()
+  })
+
+  test('blogs have a correct user field', async () => {
+    const blogs = await helper.blogsInDb()
+    expect(blogs[0].user.toString()).toBe(userid.toString())
+    expect(blogs[2].user.toString()).toBe(userid.toString())
   })
 
   test('a valid blog can be added', async () => {
@@ -132,7 +140,23 @@ describe('when there is initially 3 blogs in the db', () => {
     expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
   })
 
-  test('a blog can be deleted', async () => {
+  test('a blog can not be deleted with an incorrect token', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', 'bearer randomgarbage_6asajsfjhkjsfhskjfkjd')
+      .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd.length).toBe(blogsAtStart.length)
+
+    const titles = blogsAtEnd.map(blog => blog.title)
+    expect(titles).toContain(blogToDelete.title)
+  })
+
+  test('a blog can be deleted with the correct token', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
